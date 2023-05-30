@@ -1,3 +1,17 @@
+# checkpoints
+checkpoints
+pretrained
+*.pt
+
+# data
+data
+
+# logs
+wandb
+
+# tests
+tests
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
