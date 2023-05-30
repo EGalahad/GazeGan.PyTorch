@@ -3,10 +3,10 @@ import torch.nn as nn
 from utils import add_sp
 
 class Discriminator(nn.Module):
-    def __init__(self, ndf=16, num_layers=5, use_sp=True, version="V2") -> None:
+    def __init__(self, ndf=16, num_layers_d=5, use_sp=True, version="V2") -> None:
         super().__init__()
-        self.d1 = LocalDiscriminator(ndf=ndf, num_layers=num_layers, version=version)
-        self.d2 = GlobalDiscriminator(ndf=ndf, num_layers=num_layers)
+        self.d1 = LocalDiscriminator(ndf=ndf, num_layers=num_layers_d, version=version)
+        self.d2 = GlobalDiscriminator(ndf=ndf, num_layers=num_layers_d)
 
         if version == "V1":
             self.fc1 = nn.Linear(in_features=256 + 256, out_features=512)

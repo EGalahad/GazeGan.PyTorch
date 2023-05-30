@@ -3,7 +3,7 @@ import torch.nn as nn
 from utils import add_sp
 
 class GazeCorrection(nn.Module):
-    def __init__(self, ngf=16, num_layers=3, use_sp=False) -> None:
+    def __init__(self, ngf=16, num_layers_g=3, use_sp=False) -> None:
         super().__init__()
         out_c = ngf
 
@@ -14,7 +14,7 @@ class GazeCorrection(nn.Module):
         self.conv2d_base = nn.ModuleList()
         self.in_base = nn.ModuleList()
         u_out_c_list = []
-        for i in range(num_layers):
+        for i in range(num_layers_g):
             in_c, out_c = out_c, min(ngf * 2 ** (i + 1), 256)
             self.conv2d_base.append(nn.Conv2d(in_c, out_c, kernel_size=4, stride=2, padding=1))
             self.in_base.append(nn.InstanceNorm2d(out_c, affine=True))
@@ -28,8 +28,8 @@ class GazeCorrection(nn.Module):
         self.deconv_base = nn.ModuleList()
         self.in_deconv_base = nn.ModuleList()
         ngf = out_c
-        for i in range(num_layers):
-            in_c, out_c = out_c + u_out_c_list[num_layers - i - 1], max(ngf // (2 ** i), 16)
+        for i in range(num_layers_g):
+            in_c, out_c = out_c + u_out_c_list[num_layers_g - i - 1], max(ngf // (2 ** i), 16)
             self.deconv_base.append(nn.ConvTranspose2d(in_c, out_c, kernel_size=4, stride=2, padding=1))
             self.in_deconv_base.append(nn.InstanceNorm2d(out_c, affine=True))
         self.relu = nn.ReLU()

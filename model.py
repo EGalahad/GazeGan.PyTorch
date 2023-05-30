@@ -7,16 +7,36 @@ from models.content_encoder import ContentEncoder
 from models.gaze_correction import GazeCorrection
 from models.discriminator import Discriminator
 
+import sys
+import os
+
 class GazeGan(nn.Module):
-    def __init__(self) -> None:
+    V1_CHECKPOINT_PATH = os.path.join(os.path.dirname(__file__), "pretrained", "checkpointv1.pt")
+    V2_CHECKPOINT_PATH = os.path.join(os.path.dirname(__file__), "pretrained", "checkpointv2.pt")
+    V1_CHECKPOINT_URL = ""
+    V2_CHECKPOINT_URL = ""
+
+    def __init__(self, ngf=16, ndf=16, num_layers_r=3, num_layers_g=5, num_layers_d=5, version="V2") -> None:
         super().__init__()
-        self.Gr = ContentEncoder(ngf=16, num_layers_r=3, use_sp=False)
+        self.Gr = ContentEncoder(ngf=ngf, num_layers_r=num_layers_r, use_sp=False)
         
         for param in self.Gr.parameters():
             param.requires_grad = False
 
-        self.Gx = GazeCorrection(ngf=16, num_layers=3, use_sp=False)
-        self.Dx = Discriminator(ndf=16, num_layers=5, use_sp=True, version="V2")
+        self.Gx = GazeCorrection(ngf=ngf, num_layers_g=num_layers_g, use_sp=False)
+        self.Dx = Discriminator(ndf=ndf, num_layers_d=num_layers_d, use_sp=True, version=version)
+
+        # load the model from the checkpoint, pretrained/checkpointv1.pt for V1 and pretrained/checkpointv2.pt for V2
+        if version == "V1":
+            if not os.path.exists(self.V1_CHECKPOINT_PATH):
+                # download the checkpoint from url
+                raise FileNotFoundError("Pretrained checkpoint for V1 not found.")
+            self.load_state_dict(torch.load(self.V1_CHECKPOINT_PATH))
+        elif version == "V2":
+            if not os.path.exists(self.V2_CHECKPOINT_PATH):
+                raise FileNotFoundError("Pretrained checkpoint for V2 not found.")
+            self.load_state_dict(torch.load(self.V2_CHECKPOINT_PATH))
+
     
     def train(self, mode: bool = True):
         super().train(mode)
