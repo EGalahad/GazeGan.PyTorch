@@ -26,6 +26,9 @@ class GazeGan(nn.Module):
         self.Gx = GazeCorrection(ngf=ngf, num_layers_g=num_layers_g, use_sp=False)
         self.Dx = Discriminator(ndf=ndf, num_layers_d=num_layers_d, use_sp=True, version=version)
 
+        self.d_loss_fn, self.g_loss_fn = get_gan_losses_fn()
+        self.vgg_loss = VGGLoss()
+
         # load the model from the checkpoint, pretrained/checkpointv1.pt for V1 and pretrained/checkpointv2.pt for V2
         if version == "V1":
             if not os.path.exists(self.V1_CHECKPOINT_PATH):
@@ -37,12 +40,6 @@ class GazeGan(nn.Module):
                 raise FileNotFoundError("Pretrained checkpoint for V2 not found.")
             self.load_state_dict(torch.load(self.V2_CHECKPOINT_PATH))
 
-    
-    def train(self, mode: bool = True):
-        super().train(mode)
-        self.d_loss_fn, self.g_loss_fn = get_gan_losses_fn()
-        self.vgg_loss = VGGLoss()
-        return self
 
     def inpaiting(self, x, x_mask, x_left_eye, x_right_eye):
         xc = x * (1 - x_mask)
