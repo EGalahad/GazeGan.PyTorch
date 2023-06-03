@@ -1,12 +1,18 @@
 # Gaze Correction Module
 
-This is the gaze correction module (GCM) for LAME project.
-
-This is also a pytorch re-implementation of the paper [Dual In-painting Model for Unsupervised Gaze Correction and Animation in the Wild](https://arxiv.org/abs/2008.03834).
+This is a pytorch re-implementation of the paper [Dual In-painting Model for Unsupervised Gaze Correction and Animation in the Wild](https://arxiv.org/abs/2008.03834). The official tensorflow implementation can be found [here](https://github.com/zhangqianhui/GazeAnimation).
 
 ## Usage
 
-To use the GCM, you need to first download the pre-trained model from [here](https://drive.google.com/drive/folders/1mhuOYrjdSmYEcpyG2prtAcdELKVRu750?usp=sharing) and put it under the `pretrained` folder.
+### convert tensorflow checkpoints to pytorch state dicts
+
+I followed the instructions from [here](https://medium.com/huggingface/from-tensorflow-to-pytorch-265f40ef2a28).
+
+I provide a [converting notebook](./load_pretrained_tf2pt.ipynb) that you can use easily.
+
+### load a pretrained pytorch model
+
+To use the GazeGan, you need to first download the pre-trained model from [here](https://drive.google.com/drive/folders/1mhuOYrjdSmYEcpyG2prtAcdELKVRu750?usp=sharing) and put it under the `pretrained` folder.
 
 The folder structure should be:
 
