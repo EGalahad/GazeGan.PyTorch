@@ -2,7 +2,7 @@
 
 This is a pytorch re-implementation of the paper [Dual In-painting Model for Unsupervised Gaze Correction and Animation in the Wild](https://arxiv.org/abs/2008.03834). The official tensorflow implementation can be found [here](https://github.com/zhangqianhui/GazeAnimation).
 
-## Usage
+## Set up
 
 ### convert tensorflow checkpoints to pytorch state dicts
 
@@ -46,3 +46,21 @@ models/
 model.py
 ```
 
+## Usage
+
+To use this library, you only need to import the `load_model` function to load a pretrained model.
+
+```python
+from gazegan import load_model
+
+model = load_model()
+
+# Then you can use the model to correct the gaze of an image.
+
+xr = model(x, x_mask, left_eye, right_eye)
+# x: torch.Tensor, shape=(1, 3, H=256, W=256)
+# x_mask: torch.Tensor, shape=(1, 1, H=256, W=256)
+# left_eye: torch.Tensor, shape=(1, 3, H=64, W=64)
+# right_eye: torch.Tensor, shape=(1, 3, H=64, W=64)
+# xr: torch.Tensor, shape=(1, 3, H=256, W=256)
+```
